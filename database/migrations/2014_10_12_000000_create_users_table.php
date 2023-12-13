@@ -19,7 +19,8 @@ return new class extends Migration
             $table->boolean("is_active")->default(true);
             $table->enum('role', ["user", "admin", "super_admin"])->default('user');
             $table->timestamp("created_at")->useCurrent();
-            $table->timestamp("update_at")->useCurrent()->useCurrentOnUpdate();
+            $table->timestamp("updated_at")->useCurrent()->useCurrentOnUpdate();
+
         });
     }
 
