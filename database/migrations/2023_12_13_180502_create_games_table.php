@@ -16,8 +16,10 @@ return new class extends Migration
             $table->string('title');
             $table->string('description');
             $table->boolean("is_active")->default(true);
+            $table->unsignedBigInteger("id_user");
             $table->timestamp("created_at")->useCurrent();
             $table->timestamp("update_at")->useCurrent()->useCurrentOnUpdate();
+            $table->foreign("id_user")->references("id")->on("player_users");
         });
     }
 
