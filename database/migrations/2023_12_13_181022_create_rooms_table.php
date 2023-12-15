@@ -15,13 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('description');
-            $table->unsignedBigInteger("id_player");
-            $table->unsignedBigInteger("id_game");
             $table->boolean("is_active")->default(true);
             $table->timestamp("created_at")->useCurrent();
             $table->timestamp("update_at")->useCurrent()->useCurrentOnUpdate();
-            $table->foreign("id_player")->references("id")->on("player_users");
-            $table->foreign("id_game")->references("id")->on("games");
         });
     }
 
