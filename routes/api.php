@@ -1,6 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\games;
+use App\Http\Controllers\player_users;
+use App\Http\Controllers\room__user;
+use App\Http\Controllers\rooms;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/users', [player_users::class, 'users']);
+Route::get('/rooms', [rooms::class, 'rooms']);
+Route::get('/room__user', [room__user::class, 'room__user']);
+Route::get('/games', [games::class, 'games']);
