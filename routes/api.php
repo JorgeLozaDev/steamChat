@@ -24,6 +24,7 @@ Route::post('/login', [AuthController::class, 'login']);
 
 //user endpoints
 Route::get('/users', [player_users::class, 'listUsers']);
+Route::put('/user/{id}', [player_users::class, 'updateUser']);
 
 //rooms endpoints
 Route::get('/rooms', [rooms::class, 'rooms']);
