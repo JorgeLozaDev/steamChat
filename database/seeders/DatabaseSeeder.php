@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         \App\Models\PlayerUser::factory(10)->create();
         \App\Models\Rooms_Table::factory(10)->create();
         \App\Models\Room_User::factory(10)->create();
+        \App\Models\Games::factory(10)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
