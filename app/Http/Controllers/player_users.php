@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class player_users extends Controller
 {
-    public function users(Request $request)
+    public function listUsers(Request $request)
     {
         try {
              $games = PlayerUser::get(['*']);

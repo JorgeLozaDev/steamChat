@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\games;
 use App\Http\Controllers\player_users;
 use App\Http\Controllers\room__user;
@@ -17,7 +18,18 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/users', [player_users::class, 'users']);
+// AUTH
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+//user endpoints
+Route::get('/users', [player_users::class, 'listUsers']);
+
+//rooms endpoints
 Route::get('/rooms', [rooms::class, 'rooms']);
+
+//roo_user endpoints
 Route::get('/room__user', [room__user::class, 'room__user']);
+
+//games endpoints
 Route::get('/games', [games::class, 'games']);
