@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         \App\Models\PlayerUser::factory(10)->create();
+        \App\Models\Rooms_Table::factory(10)->create();
+        \App\Models\Room_User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
