@@ -11,8 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class player_users extends Controller
 {
-    
-    public function listUsers(Request $request)
+    public function users(Request $request)
     {
 
         try {

@@ -76,8 +76,7 @@ class AuthController extends Controller
         return $validator;
     }
 
-    public function login(Request $request)
-    {
+    public function login(Request $request) {
         try {
             // validar
             $validator = Validator::make($request->all(), [
@@ -101,7 +100,7 @@ class AuthController extends Controller
             $password = $request->input('password');
 
             $user = PlayerUser::query()->where('email', $email)->first();
-
+            
 
             if (!$user) {
                 return response()->json(
@@ -116,7 +115,7 @@ class AuthController extends Controller
             // Comprobar password
             $passwordIsValid = Hash::check($password, $user->password);
 
-            if (!$passwordIsValid) {
+            if(!$passwordIsValid) {
                 return response()->json(
                     [
                         'success' => true,
@@ -126,7 +125,7 @@ class AuthController extends Controller
                 );
             }
 
-
+            
             // generar token
             $token = $user->createToken('apiToken')->plainTextToken;
 
