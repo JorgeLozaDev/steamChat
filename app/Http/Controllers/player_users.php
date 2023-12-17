@@ -116,32 +116,30 @@ class player_users extends Controller
         }
     }
 
-    public function deleteTaskById(Request $request, $id)
+    public function deletUserById(Request $request, $id)
     {
         try {
-            
 
             // Elimnar usuario
-            
+            $deletUser = PlayerUser::find($id);
 
-            $deleteTask = PlayerUser::find($id);
-
-            if (!$deleteTask) {
+            if (!$deletUser) {
                 throw new Error('user not found');
             }
 
-            $deleteTask->delete();
+            $deletUser->delete();
 
             // Devolver tarea
             return response()->json(
                 [
                     'success' => true,
                     'message' => 'User deleted successfully',
-                    'data' => $deleteTask
+                    'data' => $deletUser
                 ],
                 Response::HTTP_OK
             );
         } catch (\Throwable $th) {
+            
             if ($th->getMessage() === 'User not found') {
                 return response()->json(
                     [
