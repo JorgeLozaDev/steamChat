@@ -40,6 +40,7 @@ class player_users extends Controller
     public function updateUser(Request $request, $id)
     {
         try {
+            
             // Obtener el usuario autenticado
             $user = auth()->user();
 

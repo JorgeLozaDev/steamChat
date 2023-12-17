@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlayerUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -76,7 +77,8 @@ class AuthController extends Controller
         return $validator;
     }
 
-    public function login(Request $request) {
+    public function login(Request $request)
+    {
         try {
             // validar
             $validator = Validator::make($request->all(), [
@@ -100,7 +102,7 @@ class AuthController extends Controller
             $password = $request->input('password');
 
             $user = PlayerUser::query()->where('email', $email)->first();
-            
+
 
             if (!$user) {
                 return response()->json(
@@ -115,7 +117,7 @@ class AuthController extends Controller
             // Comprobar password
             $passwordIsValid = Hash::check($password, $user->password);
 
-            if(!$passwordIsValid) {
+            if (!$passwordIsValid) {
                 return response()->json(
                     [
                         'success' => true,
@@ -125,7 +127,17 @@ class AuthController extends Controller
                 );
             }
 
-            
+            // Verificar si el usuario está activo
+            if (!$user->is_active) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'User is not active. Please contact support.',
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
             // generar token
             $token = $user->createToken('apiToken')->plainTextToken;
 
@@ -148,6 +160,28 @@ class AuthController extends Controller
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            $user = Auth::guard('sanctum')->user();
+
+            if ($user) {
+                $user->tokens()->delete();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User logged out successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error logging out',
+                'error' => $th->getMessage(),
+            ], 500);
         }
     }
 }
