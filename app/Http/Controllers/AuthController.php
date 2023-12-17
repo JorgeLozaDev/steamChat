@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlayerUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
@@ -159,6 +160,28 @@ class AuthController extends Controller
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            $user = Auth::guard('sanctum')->user();
+
+            if ($user) {
+                $user->tokens()->delete();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User logged out successfully',
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error logging out',
+                'error' => $th->getMessage(),
+            ], 500);
         }
     }
 }

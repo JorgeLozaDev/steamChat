@@ -23,17 +23,20 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
-//user endpoints
-Route::get('/users', [player_users::class, 'listUsers']);
-Route::put('/user/{id}', [player_users::class, 'updateUser']);
-Route::delete('/user/{id}', [player_users::class, 'deleteUserById']);
 
-//rooms endpoints
-Route::get('/rooms', [rooms::class, 'rooms']);
+    Route::post('/logout', [AuthController::class, 'logout']);
 
-//roo_user endpoints
-Route::get('/room__user', [room__user::class, 'room__user']);
+    //user endpoints
+    Route::get('/users', [player_users::class, 'listUsers']);
+    Route::put('/user/{id}', [player_users::class, 'updateUser']);
+    Route::delete('/user/{id}', [player_users::class, 'deleteUserById']);
 
-//games endpoints
-Route::get('/games', [games::class, 'games']);
+    //rooms endpoints
+    Route::get('/rooms', [rooms::class, 'rooms']);
+
+    //roo_user endpoints
+    Route::get('/room__user', [room__user::class, 'room__user']);
+
+    //games endpoints
+    Route::get('/games', [games::class, 'games']);
 });
