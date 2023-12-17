@@ -40,24 +40,6 @@ class player_users extends Controller
     public function updateUser(Request $request, $id)
     {
         try {
-            // Validar la solicitud
-            $validator = Validator::make($request->all(), [
-                'name' => 'min:3|max:100',
-                'email' => ['email', Rule::unique('player_users')->ignore($id)],
-                'password' => 'sometimes|min:6',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json(
-                    [
-                        'success' => false,
-                        'message' => 'Error en los campos',
-                        'error' => $validator->errors()
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
-
             // Obtener el usuario autenticado
             $user = auth()->user();
 
@@ -73,22 +55,61 @@ class player_users extends Controller
                 );
             }
 
+            // Actualizar el usuario solo si se proporciona al menos un campo
+            if (!$request->has('name') && !$request->has('email') && !$request->has('password')) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'No se proporcionaron datos para actualizar',
+                        'error' => 'Proporcione al menos un campo (name, email, password) para la actualización.'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Validar solo los campos proporcionados
+            $validatorData = [];
+
+            if ($request->has('name')) {
+                $validatorData['name'] = 'min:3|max:100';
+            }
+
+            if ($request->has('email')) {
+                $validatorData['email'] = ['email', Rule::unique('player_users')->ignore($id)];
+            }
+
+            if ($request->has('password')) {
+                $validatorData['password'] = 'sometimes|min:6';
+            }
+
+            $validator = Validator::make($request->all(), $validatorData);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Error en los campos',
+                        'error' => $validator->errors()
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
             // Actualizar el usuario
             $userToUpdate = PlayerUser::findOrFail($id);
 
             // Actualizar campos según la solicitud
-
-
             if ($request->has('email')) {
                 $userToUpdate->email = $request->input('email');
             }
+
             // Actualizar la contraseña si se proporciona
             if ($request->has('password')) {
                 $userToUpdate->password = bcrypt($request->input('password'));
             }
 
             if ($request->has('name')) {
-                $userToUpdate->name = $request->input('name');;
+                $userToUpdate->name = $request->input('name');
             }
 
             // Guardar los cambios
@@ -113,6 +134,7 @@ class player_users extends Controller
             );
         }
     }
+
 
     public function deletUserById(Request $request, $id)
     {

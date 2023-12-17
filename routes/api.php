@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
 //user endpoints
 Route::get('/users', [player_users::class, 'listUsers']);
 Route::put('/user/{id}', [player_users::class, 'updateUser']);
+Route::delete('/user/{id}', [player_users::class, 'deletUserById']);
 
 //rooms endpoints
 Route::get('/rooms', [rooms::class, 'rooms']);
