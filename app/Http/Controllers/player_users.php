@@ -136,10 +136,9 @@ class player_users extends Controller
     }
 
 
-    public function deletUserById(Request $request, $id)
+    public function deleteUserById(Request $request, $id)
     {
         try {
-
             // Obtener el usuario autenticado
             $user = auth()->user();
 
@@ -155,40 +154,37 @@ class player_users extends Controller
                 );
             }
 
-            // Elimnar usuario
-            $deletUser = PlayerUser::find($id);
+            // Obtener usuario para realizar la actualización
+            $userToUpdate = PlayerUser::find($id);
 
-            if (!$deletUser) {
-                throw new Error('user not found');
-            }
-
-            $deletUser->delete();
-
-            // Devolver tarea
-            return response()->json(
-                [
-                    'success' => true,
-                    'message' => 'User deleted successfully',
-                    'data' => $deletUser
-                ],
-                Response::HTTP_OK
-            );
-        } catch (\Throwable $th) {
-
-            if ($th->getMessage() === 'User not found') {
+            if (!$userToUpdate) {
                 return response()->json(
                     [
                         'success' => false,
                         'message' => 'User not found',
+                        
                     ],
                     Response::HTTP_NOT_FOUND
                 );
             }
 
+            // Realizar la actualización
+            $userToUpdate->update(['is_active' => 0]);
+
+            // Devolver respuesta
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User marked as inactive successfully',
+                    'data' => $userToUpdate
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
             return response()->json(
                 [
                     'success' => false,
-                    'message' => 'Cant delete User',
+                    'message' => 'Error marking user as inactive',
                     'error' => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
