@@ -91,8 +91,6 @@ class player_users extends Controller
                 $userToUpdate->name = $request->input('name');;
             }
 
-
-
             // Guardar los cambios
             $userToUpdate->save();
 
@@ -120,6 +118,21 @@ class player_users extends Controller
     {
         try {
 
+            // Obtener el usuario autenticado
+            $user = auth()->user();
+
+            // Comprobar si el usuario autenticado tiene permisos para actualizar el usuario
+            if ($user->id != $id) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Unauthorized',
+                        'error' => 'No tienes permiso para realizar esta acción'
+                    ],
+                    Response::HTTP_UNAUTHORIZED
+                );
+            }
+
             // Elimnar usuario
             $deletUser = PlayerUser::find($id);
 
@@ -139,7 +152,7 @@ class player_users extends Controller
                 Response::HTTP_OK
             );
         } catch (\Throwable $th) {
-            
+
             if ($th->getMessage() === 'User not found') {
                 return response()->json(
                     [
