@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PlayerUser;
+use Error;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -14,7 +15,7 @@ class player_users extends Controller
     public function listUsers(Request $request)
     {
         try {
-             $games = PlayerUser::get(['*']);
+            $games = PlayerUser::get(['*']);
 
             return response()->json(
                 [
@@ -36,15 +37,16 @@ class player_users extends Controller
         }
     }
 
-    public function updateUser(Request $request, $id) {
+    public function updateUser(Request $request, $id)
+    {
         try {
             // Validar la solicitud
             $validator = Validator::make($request->all(), [
                 'name' => 'min:3|max:100',
-                'email' => [ 'email', Rule::unique('player_users')->ignore($id)],
+                'email' => ['email', Rule::unique('player_users')->ignore($id)],
                 'password' => 'sometimes|min:6',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json(
                     [
@@ -55,28 +57,28 @@ class player_users extends Controller
                     Response::HTTP_BAD_REQUEST
                 );
             }
-    
+
             // Obtener el usuario autenticado
             $user = auth()->user();
-    
+
             // Comprobar si el usuario autenticado tiene permisos para actualizar el usuario
             if ($user->id != $id) {
                 return response()->json(
                     [
                         'success' => false,
                         'message' => 'Unauthorized',
-                        'error'=> 'No tienes permiso para estar aqui'
+                        'error' => 'No tienes permiso para estar aqui'
                     ],
                     Response::HTTP_UNAUTHORIZED
                 );
             }
-    
+
             // Actualizar el usuario
             $userToUpdate = PlayerUser::findOrFail($id);
-    
+
             // Actualizar campos según la solicitud
-            
-            
+
+
             if ($request->has('email')) {
                 $userToUpdate->email = $request->input('email');
             }
@@ -88,12 +90,12 @@ class player_users extends Controller
             if ($request->has('name')) {
                 $userToUpdate->name = $request->input('name');;
             }
-    
-            
-    
+
+
+
             // Guardar los cambios
             $userToUpdate->save();
-    
+
             return response()->json(
                 [
                     'success' => true,
@@ -108,6 +110,53 @@ class player_users extends Controller
                     'success' => false,
                     'message' => 'Error updating user',
                     'error' => $th->getMessage(),
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    public function deleteTaskById(Request $request, $id)
+    {
+        try {
+            
+
+            // Elimnar usuario
+            
+
+            $deleteTask = PlayerUser::find($id);
+
+            if (!$deleteTask) {
+                throw new Error('user not found');
+            }
+
+            $deleteTask->delete();
+
+            // Devolver tarea
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User deleted successfully',
+                    'data' => $deleteTask
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+            if ($th->getMessage() === 'User not found') {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'User not found',
+                    ],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Cant delete User',
+                    'error' => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
