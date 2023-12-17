@@ -15,5 +15,6 @@ class PlayerUser extends Model
         'name',
         'email',
         'password',
+        'is_active',
     ];
 }

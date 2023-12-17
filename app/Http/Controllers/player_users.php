@@ -40,24 +40,6 @@ class player_users extends Controller
     public function updateUser(Request $request, $id)
     {
         try {
-            // Validar la solicitud
-            $validator = Validator::make($request->all(), [
-                'name' => 'min:3|max:100',
-                'email' => ['email', Rule::unique('player_users')->ignore($id)],
-                'password' => 'sometimes|min:6',
-            ]);
-
-            if ($validator->fails()) {
-                return response()->json(
-                    [
-                        'success' => false,
-                        'message' => 'Error en los campos',
-                        'error' => $validator->errors()
-                    ],
-                    Response::HTTP_BAD_REQUEST
-                );
-            }
-
             // Obtener el usuario autenticado
             $user = auth()->user();
 
@@ -73,22 +55,61 @@ class player_users extends Controller
                 );
             }
 
+            // Actualizar el usuario solo si se proporciona al menos un campo
+            if (!$request->has('name') && !$request->has('email') && !$request->has('password')) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'No se proporcionaron datos para actualizar',
+                        'error' => 'Proporcione al menos un campo (name, email, password) para la actualización.'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Validar solo los campos proporcionados
+            $validatorData = [];
+
+            if ($request->has('name')) {
+                $validatorData['name'] = 'min:3|max:100';
+            }
+
+            if ($request->has('email')) {
+                $validatorData['email'] = ['email', Rule::unique('player_users')->ignore($id)];
+            }
+
+            if ($request->has('password')) {
+                $validatorData['password'] = 'sometimes|min:6';
+            }
+
+            $validator = Validator::make($request->all(), $validatorData);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Error en los campos',
+                        'error' => $validator->errors()
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
             // Actualizar el usuario
             $userToUpdate = PlayerUser::findOrFail($id);
 
             // Actualizar campos según la solicitud
-
-
             if ($request->has('email')) {
                 $userToUpdate->email = $request->input('email');
             }
+
             // Actualizar la contraseña si se proporciona
             if ($request->has('password')) {
                 $userToUpdate->password = bcrypt($request->input('password'));
             }
 
             if ($request->has('name')) {
-                $userToUpdate->name = $request->input('name');;
+                $userToUpdate->name = $request->input('name');
             }
 
             // Guardar los cambios
@@ -114,10 +135,10 @@ class player_users extends Controller
         }
     }
 
-    public function deletUserById(Request $request, $id)
+
+    public function deleteUserById(Request $request, $id)
     {
         try {
-
             // Obtener el usuario autenticado
             $user = auth()->user();
 
@@ -133,40 +154,37 @@ class player_users extends Controller
                 );
             }
 
-            // Elimnar usuario
-            $deletUser = PlayerUser::find($id);
+            // Obtener usuario para realizar la actualización
+            $userToUpdate = PlayerUser::find($id);
 
-            if (!$deletUser) {
-                throw new Error('user not found');
-            }
-
-            $deletUser->delete();
-
-            // Devolver tarea
-            return response()->json(
-                [
-                    'success' => true,
-                    'message' => 'User deleted successfully',
-                    'data' => $deletUser
-                ],
-                Response::HTTP_OK
-            );
-        } catch (\Throwable $th) {
-
-            if ($th->getMessage() === 'User not found') {
+            if (!$userToUpdate) {
                 return response()->json(
                     [
                         'success' => false,
                         'message' => 'User not found',
+                        
                     ],
                     Response::HTTP_NOT_FOUND
                 );
             }
 
+            // Realizar la actualización
+            $userToUpdate->update(['is_active' => 0]);
+
+            // Devolver respuesta
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User marked as inactive successfully',
+                    'data' => $userToUpdate
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
             return response()->json(
                 [
                     'success' => false,
-                    'message' => 'Cant delete User',
+                    'message' => 'Error marking user as inactive',
                     'error' => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
