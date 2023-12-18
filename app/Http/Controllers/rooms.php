@@ -73,8 +73,6 @@ class rooms extends Controller
                     'id_user' => $id_user
                 ]
             );
-
-            // $games = ModelsGames::get(['*']);
             // devolver respuesta
             return response()->json(
                 [
@@ -164,7 +162,7 @@ class rooms extends Controller
                 );
             }
 
-            // Actualizar el juego
+            // Actualizar la sala
             $roomToUpdate = Rooms_Table::findOrFail($id);
 
             // Actualizar campos según la solicitud
@@ -199,6 +197,58 @@ class rooms extends Controller
                     'success' => false,
                     'message' => 'Error updating user',
                     'error' => $th->getMessage(),
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
+    public function deleteRoomById(Request $request, $id)
+    {
+        try {
+            //verifico si no es usuario y si su cuenta es activa.
+            $userGameCreator = auth()->user();
+            if ($userGameCreator->role === "user" || $userGameCreator->is_active === 0) {
+                return response()->json(
+                    [
+                        'succes' => false,
+                        'message' => 'UNHAUTORIZED'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Obtener sala para realizar el borrado
+            $roomToDelete = Rooms_Table::find($id);
+
+            if (!$roomToDelete) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Game not found',
+                    ],
+                    Response::HTTP_NOT_FOUND
+                );
+            }
+
+            // Realizar la actualización
+            $roomToDelete->update(['is_active' => 0]);
+
+            // Devolver respuesta
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User marked as inactive successfully',
+                    'data' => $roomToDelete
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'succes' => false,
+                    'message' => 'NO',
+                    'error' => $th->getMessage()
                 ],
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );

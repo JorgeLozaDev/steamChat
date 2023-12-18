@@ -35,6 +35,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/room', [rooms::class, 'newRoom']);
     Route::get('/rooms', [rooms::class, 'listRooms']);
     Route::put('/room/{id}', [rooms::class, 'updateRoom']);
+    Route::delete('/room/{id}', [rooms::class, 'deleteRoomById']);
 });
 
 //ROOM_USER

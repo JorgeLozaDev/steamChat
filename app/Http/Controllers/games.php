@@ -51,8 +51,6 @@ class games extends Controller
                     'id_user' => $id_user
                 ]
             );
-
-            // $games = ModelsGames::get(['*']);
             // devolver respuesta
             return response()->json(
                 [
@@ -152,7 +150,7 @@ class games extends Controller
                 );
             }
 
-            // Actualizar el usuario solo si se proporciona al menos un campo
+            // Actualizar el juego solo si se proporciona al menos un campo
             if (!$request->has('title') && !$request->has('description') && !$request->has('is_active')){
                 return response()->json(
                     [
