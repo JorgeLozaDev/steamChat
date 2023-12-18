@@ -9,4 +9,10 @@ class Rooms_Table extends Model
 {
     use HasFactory;
     protected $table = 'rooms';
+    protected $fillable = [
+        'title',
+        'description',
+        'id_user',
+        'is_active',
+    ];
 }

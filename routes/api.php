@@ -32,7 +32,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 //ROOMS
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/room', [rooms::class, 'newRoom']);
     Route::get('/rooms', [rooms::class, 'listRooms']);
+    Route::put('/room/{id}', [rooms::class, 'updateRoom']);
 });
 
 //ROOM_USER

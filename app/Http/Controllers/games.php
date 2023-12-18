@@ -140,7 +140,7 @@ class games extends Controller
             // Obtener el usuario autenticado
             $user = auth()->user();
 
-            // Comprobar si el usuario autenticado tiene permisos para actualizar el usuario
+            // Comprobar si el usuario autenticado tiene permisos para actualizar el juego
             if ($user->rol === "user") {
                 return response()->json(
                     [
