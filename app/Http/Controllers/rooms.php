@@ -5,20 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Rooms_Table;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Validator;
 
 class rooms extends Controller
 {
-    public function rooms(Request $request)
+    public function listRooms(Request $request)
     {
         try {
-            $token = $request->header('Authorization');
-            $games = Rooms_Table::get(['*']);
-
+            $rooms = Rooms_Table::get(['*']);
             return response()->json(
                 [
-                    'succes' => true,
-                    'message' => 'usuarios',
-                    'data' => $games
+                    'success' => true,
+                    'message' => 'GAME LIST',
+                    'data' => $rooms
                 ],
                 Response::HTTP_OK
             );

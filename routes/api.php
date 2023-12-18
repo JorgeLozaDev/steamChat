@@ -21,18 +21,18 @@ use Illuminate\Support\Facades\Route;
 // AUTH
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 
 //USERS
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users', [player_users::class, 'listUsers']);
     Route::put('/user/{id}', [player_users::class, 'updateUser']);
     Route::delete('/user/{id}', [player_users::class, 'deleteUserById']);
-    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 //ROOMS
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/rooms', [rooms::class, 'rooms']);
+    Route::get('/rooms', [rooms::class, 'listRooms']);
 });
 
 //ROOM_USER
