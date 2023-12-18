@@ -11,13 +11,15 @@ class room__user extends Controller
     public function room__user(Request $request)
     {
         try {
-             $games = Room_User::get(['*']);
+            $user_admin = auth()->user();
+            // if($user_admin->rol)
+            $games = Room_User::get(['*']);
 
             return response()->json(
                 [
                     'succes' => true,
                     'message' => 'usuarios',
-                    'data' => $games
+                    'data' => $user_admin->role
                 ],
                 Response::HTTP_OK
             );

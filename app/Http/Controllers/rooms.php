@@ -11,7 +11,8 @@ class rooms extends Controller
     public function rooms(Request $request)
     {
         try {
-             $games = Rooms_Table::get(['*']);
+            $token = $request->header('Authorization');
+            $games = Rooms_Table::get(['*']);
 
             return response()->json(
                 [

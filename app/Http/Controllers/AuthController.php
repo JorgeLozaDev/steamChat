@@ -167,14 +167,12 @@ class AuthController extends Controller
     {
         try {
             $user = Auth::guard('sanctum')->user();
-
             if ($user) {
-                $user->tokens()->delete();
+                $request->user()->currentAccessToken()->delete();
             }
-
             return response()->json([
                 'success' => true,
-                'message' => 'User logged out successfully',
+                'message' => $user,
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

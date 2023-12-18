@@ -38,5 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/room__user', [room__user::class, 'room__user']);
 
     //games endpoints
-    Route::get('/games', [games::class, 'games']);
+    Route::post('/games', [games::class, 'newGame']);
+    // Route::get('/games', [games::class, 'listGames']);
+    // Route::put('/games', [games::class, 'updateGames']);
+    // Route::delete('/games', [games::class, 'deleteGames']);
 });

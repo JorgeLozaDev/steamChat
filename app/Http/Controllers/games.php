@@ -8,16 +8,42 @@ use Illuminate\Http\Request;
 
 class games extends Controller
 {
-    public function games(Request $request)
+    public function newGame(Request $request)
     {
         try {
-             $games = ModelsGames::get(['*']);
+            //verifico al usuario si es admin o super_admin y si su cuenta es activa.
+            $userGameCreator = auth()->user();
+            if ($userGameCreator->role === "user" || $userGameCreator->is_active === 0) {
+                return response()->json(
+                    [
+                        'succes' => false,
+                        'message' => 'no puedes crear juegos'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
 
+            // recoger info
+            $title = $request->input('title');
+            $description = $request->input('description');
+            $id_user = $userGameCreator->id;
+
+            // guardarla
+            $newGame = ModelsGames::create(
+                [
+                    'title' => $title,
+                    'description' => $description,
+                    'id_user' => $id_user
+                ]
+            );
+
+            // $games = ModelsGames::get(['*']);
+            // devolver respuesta
             return response()->json(
                 [
-                    'succes' => true,
-                    'message' => 'usuarios',
-                    'data' => $games
+                    'success' => true,
+                    'message' => 'Game registered successfully',
+                    'data' => $newGame
                 ],
                 Response::HTTP_OK
             );
