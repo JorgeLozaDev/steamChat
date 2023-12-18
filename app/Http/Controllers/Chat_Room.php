@@ -92,6 +92,7 @@ class chat_room extends Controller
             );
         }
     }
+    
     public function updateMessage(Request $request,$idMessage)
     {
         try {
@@ -132,6 +133,57 @@ class chat_room extends Controller
                         'success' => true,
                         'message' => 'Message',
                         'data' => $messageToUpdate
+                    ],
+                    Response::HTTP_OK
+                );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'succes' => false,
+                    'message' => 'NO',
+                    'error' => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+    
+    public function deleteMessage(Request $request,$idMessage)
+    {
+        try {
+            $user = auth()->user();
+            //verifico si su cuenta es activa.
+            if ($user->is_active === 0) {
+                return response()->json(
+                    [
+                        'succes' => false,
+                        'message' => 'su cuenta ha sido borrada'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            $messageToDelete = ModelChat_Room::findOrFail($idMessage);
+            
+            if($messageToDelete->id_player_sender != $user->id){
+                return response()->json(
+                    [
+                        'succes' => false,
+                        'message' => 'UNHAUTORIZED'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            //se actualiza el borrado logico
+            $messageToDelete->update(['is_active' => 0]);
+
+            //respuesta
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Message',
+                        'data' => $messageToDelete
                     ],
                     Response::HTTP_OK
                 );
