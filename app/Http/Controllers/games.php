@@ -78,7 +78,7 @@ class games extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|min:3|max:100',
-            'description' => 'required|min:3|max:250'
+            'description' => 'required|min:1|max:250'
         ]);
 
         return $validator;
@@ -132,6 +132,107 @@ class games extends Controller
             );
         }
     }
+
+    public function updateGames(Request $request, $id)
+    {
+        try {
+            
+            // Obtener el usuario autenticado
+            $user = auth()->user();
+
+            // Comprobar si el usuario autenticado tiene permisos para actualizar el usuario
+            if ($user->rol === "user") {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Unauthorized',
+                        'error' => 'No tienes permiso para estar aqui'
+                    ],
+                    Response::HTTP_UNAUTHORIZED
+                );
+            }
+
+            // Actualizar el usuario solo si se proporciona al menos un campo
+            if (!$request->has('title') && !$request->has('description') && !$request->has('is_active')){
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'No se proporcionaron datos para actualizar',
+                        'error' => 'Proporcione al menos un campo (title o description) para la actualización.'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Validar solo los campos proporcionados
+            $validatorData = [];
+
+            if ($request->has('title')) {
+                $validatorData['title'] = 'min:3|max:100';
+            }
+
+            if ($request->has('description')) {
+                $validatorData['description'] = 'min:1|max:250';
+            }
+
+            if ($request->has('is_active')) {
+                $validatorData['is_active'] = 'max:2';
+            }
+
+            $validator = Validator::make($request->all(), $validatorData);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    [
+                        'success' => false,
+                        'message' => 'Error en los campos',
+                        'error' => $validator->errors()
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // Actualizar el juego
+            $gameToUpdate = ModelGames::findOrFail($id);
+
+            // Actualizar campos según la solicitud
+            if ($request->has('title')) {
+                $gameToUpdate->title = $request->input('title');
+            }
+
+            if ($request->has('description')) {
+                $gameToUpdate->description = $request->input('description');
+            }
+            
+            if ($request->has('is_active')) {
+                $gameToUpdate->is_active = $request->input('is_active');
+            }
+            
+            $gameToUpdate->id_user = $user->id;
+
+            // Guardar los cambios
+            $gameToUpdate->save();
+
+            return response()->json(
+                [
+                    'success' => true,
+                    'message' => 'User updated successfully',
+                    'data' => $gameToUpdate,
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'success' => false,
+                    'message' => 'Error updating user',
+                    'error' => $th->getMessage(),
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+
     public function deleteGamesById(Request $request, $id)
     {
         try {

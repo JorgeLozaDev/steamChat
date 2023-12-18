@@ -40,5 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
     //games endpoints
     Route::post('/games', [games::class, 'newGame']);
     Route::get('/games', [games::class, 'listGames']);
+    Route::put('/games/{id}', [games::class, 'updateGames']);
     Route::delete('/games/{id}', [games::class, 'deleteGamesById']);
 });
