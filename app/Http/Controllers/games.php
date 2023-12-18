@@ -12,7 +12,7 @@ class games extends Controller
     public function newGame(Request $request)
     {
         try {
-            //verifico al usuario si es admin o super_admin y si su cuenta es activa.
+            //verifico si es usuario y si su cuenta es activa.
             $userGameCreator = auth()->user();
             if ($userGameCreator->role === "user" || $userGameCreator->is_active === 0) {
                 return response()->json(
@@ -73,6 +73,7 @@ class games extends Controller
             );
         }
     }
+
     public function validateNewGame(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -81,5 +82,56 @@ class games extends Controller
         ]);
 
         return $validator;
+    }
+
+    public function listGames(Request $request)
+    {
+        try {
+            
+
+            $userGameCreator = auth()->user();
+            //verifico si su cuenta es activa.
+            if ($userGameCreator->is_active === 0) {
+                return response()->json(
+                    [
+                        'succes' => false,
+                        'message' => 'su cuenta ha sido borrada'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+            $games = ModelsGames::get(['id','is_active','title','description']);
+            //si es user le muestro cierta información
+            if ($userGameCreator->role === "user") {
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'listado de los juegos',
+                        'data' => $games,
+                    ],
+                    Response::HTTP_OK
+                );
+            } else {
+                //si es admin o super admin devolver todo
+                $games = ModelsGames::get(['*']);
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'listado de los juegos',
+                        'data' => $games
+                    ],
+                    Response::HTTP_OK
+                );
+            }
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'succes' => false,
+                    'message' => 'NO',
+                    'error' => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

@@ -11,17 +11,17 @@ use Symfony\Component\HttpFoundation\Response;
 
 class player_users extends Controller
 {
-    public function users(Request $request)
+    public function listUsers(Request $request)
     {
 
         try {
-            $games = PlayerUser::get(['*']);
+            $users = PlayerUser::get(['*']);
 
             return response()->json(
                 [
                     'succes' => true,
                     'message' => 'usuarios',
-                    'data' => $games
+                    'data' => $users
                 ],
                 Response::HTTP_OK
             );
