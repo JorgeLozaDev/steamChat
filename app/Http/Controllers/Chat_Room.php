@@ -92,4 +92,58 @@ class chat_room extends Controller
             );
         }
     }
+    public function updateMessage(Request $request,$idMessage)
+    {
+        try {
+            $user = auth()->user();
+            //verifico si su cuenta es activa.
+            if ($user->is_active === 0) {
+                return response()->json(
+                    [
+                        'succes' => false,
+                        'message' => 'su cuenta ha sido borrada'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            $messageToUpdate = ModelChat_Room::findOrFail($idMessage);
+            
+            if($messageToUpdate->id_player_sender != $user->id){
+                return response()->json(
+                    [
+                        'succes' => false,
+                        'message' => 'UNHAUTORIZED'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            //se actualizan los datos
+            $messageToUpdate->message = $request->input('message');
+            $messageToUpdate->id_player_sender = $user->id;
+
+            //se guarda los cambios
+            $messageToUpdate->save();
+
+            //respuesta
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Message',
+                        'data' => $messageToUpdate
+                    ],
+                    Response::HTTP_OK
+                );
+        } catch (\Throwable $th) {
+            return response()->json(
+                [
+                    'succes' => false,
+                    'message' => 'NO',
+                    'error' => $th->getMessage()
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
