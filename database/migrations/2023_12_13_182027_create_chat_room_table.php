@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger("id_player_sender");
             $table->unsignedBigInteger("id_room");
             $table->string('message');
+            $table->boolean("is_active")->default(true);
             $table->timestamp("created_at")->useCurrent();
             $table->timestamp("updated_at")->useCurrent()->useCurrentOnUpdate();
             $table->foreign("id_player_sender")->references("id")->on("player_users");

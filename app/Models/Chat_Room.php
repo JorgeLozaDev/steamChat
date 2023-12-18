@@ -12,6 +12,7 @@ class Chat_Room extends Model
     protected $fillable = [
         'id_player_sender',
         'id_room',
-        'message'
+        'message',
+        "is_active"
     ];
 }
