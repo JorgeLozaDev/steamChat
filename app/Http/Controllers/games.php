@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Games as ModelsGames;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class games extends Controller
 {
@@ -18,6 +19,20 @@ class games extends Controller
                     [
                         'succes' => false,
                         'message' => 'no puedes crear juegos'
+                    ],
+                    Response::HTTP_BAD_REQUEST
+                );
+            }
+
+            // validar
+            $validator = $this->validateNewGame($request);
+
+            if ($validator->fails()) {
+                return response()->json(
+                    [
+                        'success' => true,
+                        'message' => 'Game not registered',
+                        'error' => $validator->errors()
                     ],
                     Response::HTTP_BAD_REQUEST
                 );
@@ -57,5 +72,14 @@ class games extends Controller
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
+    }
+    public function validateNewGame(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'title' => 'required|min:3|max:100',
+            'description' => 'required|min:3|max:250'
+        ]);
+
+        return $validator;
     }
 }
