@@ -22,22 +22,26 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
+//USERS
 Route::middleware('auth:sanctum')->group(function () {
-
-    Route::post('/logout', [AuthController::class, 'logout']);
-
-    //user endpoints
     Route::get('/users', [player_users::class, 'listUsers']);
     Route::put('/user/{id}', [player_users::class, 'updateUser']);
     Route::delete('/user/{id}', [player_users::class, 'deleteUserById']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+});
 
-    //rooms endpoints
+//ROOMS
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/rooms', [rooms::class, 'rooms']);
+});
 
-    //roo_user endpoints
+//ROOM_USER
+Route::middleware('auth:sanctum')->group(function () {
     Route::get('/room__user', [room__user::class, 'room__user']);
+});
 
-    //games endpoints
+//GAMES
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/games', [games::class, 'newGame']);
     Route::get('/games', [games::class, 'listGames']);
     Route::put('/games/{id}', [games::class, 'updateGames']);
