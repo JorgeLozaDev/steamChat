@@ -59,7 +59,7 @@ Este proyecto se ha realizado con:
 
 <div align="center">
   <a href="https://github.com/AlinPetrisorCiobanu">
-    <img src="https://avatars.githubusercontent.com/u/126453796?v=4" alt="Nombre del Colaborador" width="100" style="border-radius:50%">
+    <img src="https://avatars.githubusercontent.com/u/126453796?v=4" alt="Nombre del Colaborador" width="100" style="border-radius:50%" class="circle">
   </a>
   <br>
   <a href="https://github.com/AlinPetrisorCiobanu">Alin Petrisor Ciobanu</a>
