@@ -45,6 +45,9 @@ A continuación se explicaran los pasos a seguir para poder utilizar nuestra apl
 -   Ejecuta el comando `php artisan migrate`, de esta forma crearas la base de datos y las tablas que vamos a utilizar.
 -   Hemos creado unos seeder para usarlo ejecuta el comando `php artisan db:seed` esto creara registros en todas las tablas.
 
+Usuario de prueba: `` admin@admin.com `` 
+Contrasela: `` password ``
+
 ### Endpoints
 A continuación te mostraremos una tabla con los endpoints de la aplicación y los datos que deben proporcionar para su correcto funcionamiento.
 
