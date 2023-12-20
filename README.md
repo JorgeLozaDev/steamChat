@@ -55,6 +55,20 @@ A continuación te mostraremos una tabla con los endpoints de la aplicación y l
 |--------------------------|--------|-----------------------------------------------------|-------------------|------------------------|
 | `/api/register` | POST   | {"name": "", "email": "", "password": ""}  |                   |                        |
 | `/api/login`    | POST   | {"email": "", "password": ""}              |                   |                        |
+| `/api/logout`            | POST   |                                                     |                   | Sí                     |
+| `/api/users`             | GET    |                                                     |                   | Sí                     |
+| `/api/user/:id`          | PUT    | {"name": "", "email": "",password:""}                           | `id` en la URL    | Sí                     |
+| `/api/user/:id`          | DELETE |                                                     | `id` en la URL    | Sí                     |
+| `/api/games`             | POST   | {"title": "", "description": ""}          |                   | Sí                     |
+| `/api/games`             | GET    |                                                     |                   | Sí                     |
+| `/api/games/:id`         | PUT    | {"title": "", "description": ""}                   | `id` en la URL    | Sí                     |
+| `/api/games/:id`         | DELETE |                                                     | `id` en la URL    | Sí                     |
+| `/api/rooms`             | GET    |                                                     |                   | Sí                     |
+| `/api/room`              | POST   | {"title": "", "description": ""}        |                   | Sí                     |
+| `/api/room/:id`           | PUT    | {"title": "", "description": ""}   | `id` en la URL    | Sí                     |
+| `/api/room/:id`           | DELETE |                                                     | `id` en la URL    | Sí                     |
+
+
 
 
 ## Equipo
