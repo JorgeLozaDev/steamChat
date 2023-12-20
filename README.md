@@ -51,10 +51,11 @@ Contrasela: `` password ``
 ### Endpoints
 A continuación te mostraremos una tabla con los endpoints de la aplicación y los datos que deben proporcionar para su correcto funcionamiento.
 
-| Endpoint        | Método | Datos de entrada                          |
-| --------------- | ------ | ----------------------------------------- |
-| `/api/register` | POST   | {"name": "", "email": "", "password": ""} |
-| `/api/login`    | POST   | {"email": "", "password": ""}             |
+| Endpoint                 | Método | Datos de entrada                                    | Parámetros de URL | Requiere Autenticación |
+|--------------------------|--------|-----------------------------------------------------|-------------------|------------------------|
+| `/api/register` | POST   | {"name": "", "email": "", "password": ""}  |                   |                        |
+| `/api/login`    | POST   | {"email": "", "password": ""}              |                   |                        |
+
 
 ## Equipo
 
