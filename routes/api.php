@@ -1,24 +1,12 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Chat;
 use App\Http\Controllers\Chat_Room;
 use App\Http\Controllers\games;
 use App\Http\Controllers\player_users;
 use App\Http\Controllers\room__user;
 use App\Http\Controllers\rooms;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "api" middleware group. Make something great!
-|
-*/
 
 // AUTH
 Route::post('/register', [AuthController::class, 'register']);
